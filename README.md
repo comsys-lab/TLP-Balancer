@@ -59,12 +59,14 @@ Single runs:
 ./experiments_merge_and_fusion_seq.py <mode> <num_requests> <avg_inference_time>
 ```
 
-| mode | Policy | Result files | `<avg_inference_time>` |
-|---|---|---|---|
-| – | Sequential (baseline) | `results/sequential*.txt` | 1.043856534 |
-| 0 | Merge and Fusion (prior work, even warp split) | `results/merge_fusion*.txt` | 0.855183874 |
-| 1 | **TLP Balancer** | `results/tlp_balancer*.txt` | 0.649835207 |
-| 3 | Oracle | `results/oracle*.txt` | 0.642967405 |
+| Policy | Command | Result files |
+|---|---|---|
+| Sequential (baseline) | `./experiments_seq.py 1000 1.043856534` | `results/sequential*.txt` |
+| Merge and Fusion (prior work, even warp split) | `./experiments_merge_and_fusion_seq.py 0 1000 0.855183874` | `results/merge_fusion*.txt` |
+| **TLP Balancer** | `./experiments_merge_and_fusion_seq.py 1 1000 0.649835207` | `results/tlp_balancer*.txt` |
+| Oracle | `./experiments_merge_and_fusion_seq.py 3 1000 0.642967405` | `results/oracle*.txt` |
+
+Sequential has its own script and takes no mode argument.
 
 `<avg_inference_time>` sets the Poisson arrival rate (arrival interval = avg_inference_time × 100/95). The values above are the ones used in the paper and in `exp.sh`.
 
