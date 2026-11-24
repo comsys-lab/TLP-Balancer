@@ -104,7 +104,7 @@ def inference(count, user_request, random_model_list, total, stopping, producer_
                 break
 
         # 
-        file = open("results/" + "0_" + str(avg_inference_time) + ".txt","a")
+        file = open("results/sequential.txt","a")
 
         # 처리된 request가 total개가 되면 inference 종료
         request_count = count.qsize()
@@ -260,9 +260,10 @@ if __name__ == '__main__':
 
     total_execution_time = execution_start_end_time_list[1] - execution_start_end_time_list[0]
 
-    with open("results/" + "0_" + str(avg_inference_time) + ".txt","a") as file:
+    with open("results/sequential.txt","a") as file:
         file.write("------------------------------------------------" + '\n')
         file.write("mode: Sequential execution" + '\n')
+        file.write("Average inference time (arrival rate): " + str(avg_inference_time) + '\n')
         file.write(f"Total execution time: {(total_execution_time):.6f}" + '\n')
         file.write('Total processed requests: {0}'.format(count.qsize()) + '\n')
         file.write('Number of requests not queued: ' + str(not_processed_list[0]) + '\n')

@@ -59,19 +59,28 @@ Single runs:
 ./experiments_merge_and_fusion_seq.py <mode> <num_requests> <avg_inference_time>
 ```
 
-| mode | Policy | Result file |
-|---|---|---|
-| – | Sequential (baseline) | `results/0_*.txt` |
-| 0 | Merge and Fusion (prior work, even warp split) | `results/1_*.txt` |
-| 1 | **TLP Balancer** | `results/2_*.txt` |
-| 3 | Oracle | `results/4_*.txt` |
+| mode | Policy | Result files | `<avg_inference_time>` |
+|---|---|---|---|
+| – | Sequential (baseline) | `results/sequential*.txt` | 1.043856534 |
+| 0 | Merge and Fusion (prior work, even warp split) | `results/merge_fusion*.txt` | 0.855183874 |
+| 1 | **TLP Balancer** | `results/tlp_balancer*.txt` | 0.649835207 |
+| 3 | Oracle | `results/oracle*.txt` | 0.642967405 |
 
-`<avg_inference_time>` sets the Poisson arrival rate (arrival interval = avg_inference_time × 100/95). The values in `exp.sh` are the ones used in the paper.
+`<avg_inference_time>` sets the Poisson arrival rate (arrival interval = avg_inference_time × 100/95). The values above are the ones used in the paper and in `exp.sh`.
 
-Each result file has one line per request (`model  queuing_delay  inference_time`), followed by a summary. `*_warp_allocation_results.txt` logs the warp split and kernel time for each layer.
+## Results
+
+Each policy produces two files in `results/`:
+
+- `<policy>.txt`: one line per request (`model  queuing_delay  inference_time`), followed by a summary.
+- `<policy>_warp_allocation.txt`: one line per fused layer (`layer: #ResNet #ViT ResNet_warps ViT_warps kernel_time_ms`).
+
+`oracle_old_table*.txt` comes from an earlier version of the Oracle warp table. `oracle*.txt` matches the table in `src/warp_allocation.cu`.
+
+Result files are opened in append mode. Move old results away before running again.
 
 ```bash
-./parsing.py results/2_0.649835207.txt
+./parsing.py results/tlp_balancer.txt   # average queuing delay / inference time
 ```
 
 ## Citation

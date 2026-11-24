@@ -1,9 +1,9 @@
 #!/usr/bin/python3
-# Usage: ./parsing.py results/2_0.649835207.txt
+# Usage: ./parsing.py results/tlp_balancer.txt
 # Prints average queuing delay (2nd column) and average inference time (3rd column).
 import sys
 
-path = sys.argv[1] if len(sys.argv) > 1 else 'results/2_0.649835207.txt'
+path = sys.argv[1] if len(sys.argv) > 1 else 'results/tlp_balancer.txt'
 
 with open(path, 'r') as file:
     lines = file.readlines()

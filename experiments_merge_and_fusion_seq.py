@@ -11,6 +11,13 @@ from numpy import random
 import ctypes
 from ctypes import *
 
+# mode -> (result file name, description)
+MODES = {
+    0: ('merge_fusion', 'Merge and Fusion'),
+    1: ('tlp_balancer', 'TLP Balancer'),
+    3: ('oracle',       'Oracle'),
+}
+
 def inference(count, user_request, random_model_list, total, stopping, producer_status, finisher, execution_start_end_time_list, mode, avg_inference_time):
     dll = ctypes.CDLL('./tlp_balancer.so', mode=ctypes.RTLD_GLOBAL)
 
@@ -104,7 +111,7 @@ def inference(count, user_request, random_model_list, total, stopping, producer_
                 break
 
         # 
-        file = open("results/" + str(mode+1) + "_" + str(avg_inference_time) + ".txt","a")
+        file = open("results/" + MODES[mode][0] + ".txt","a")
 
         # 처리된 request가 total개가 되면 inference 종료
         request_count = count.qsize()
@@ -266,6 +273,8 @@ if __name__ == '__main__':
         mode = int(sys.argv[1])
         total = int(sys.argv[2])
         avg_inference_time = float(sys.argv[3])
+        if mode not in MODES:
+            raise ValueError
     except:
         print("Error")
         print("Usage: ./experiments_merge_and_fusion_seq.py mode total_num_requests delay")
@@ -274,13 +283,7 @@ if __name__ == '__main__':
         print("3: Oracle")
         exit(1)
 
-    mode_name = ""
-    if mode == 0:
-        mode_name = "mode: Merge and Fusion"
-    elif mode == 1:
-        mode_name = "mode: TLP Balancer"
-    elif mode == 3:
-        mode_name = "mode: Oracle"
+    mode_name = MODES[mode][1]
 
     user_request = Queue()  # user의 request를 저장하는 queue (request time 저장)
     count = Queue()         # 처리한 request의 개수를 저장하기 위한 queue
@@ -314,9 +317,10 @@ if __name__ == '__main__':
 
     total_execution_time = execution_start_end_time_list[1] - execution_start_end_time_list[0]
 
-    with open("results/" + str(mode+1) + "_" + str(avg_inference_time) + ".txt","a") as file:
+    with open("results/" + MODES[mode][0] + ".txt","a") as file:
         file.write("------------------------------------------------" + '\n')
         file.write("mode: " + mode_name + '\n')
+        file.write("Average inference time (arrival rate): " + str(avg_inference_time) + '\n')
         file.write(f"Total execution time: {(total_execution_time):.6f}" + '\n')
         file.write('Total processed requests: {0}'.format(count.qsize()) + '\n')
         file.write('Number of requests not queued: ' + str(not_processed_list[0]) + '\n')
