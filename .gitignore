@@ -1,0 +1,12 @@
+# VGG16 weights (1.7GB, exceeds GitHub file size limit) - see README
+data_vgg16/
+
+# Build output
+*.so
+
+# Runtime output
+warp_allocation_results.txt
+__pycache__/
+
+# Paper PDF (IEEE copyright)
+*.pdf
